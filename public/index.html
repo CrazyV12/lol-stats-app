@@ -4,19 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Mini OP.GG</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #121212; color: white; text-align: center; padding: 50px; }
-        .search-box { margin-bottom: 30px; }
-        input { padding: 10px; font-size: 16px; border-radius: 5px; border: none; margin: 5px; }
-        button { padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #5383e8; color: white; border: none; border-radius: 5px; font-weight: bold; }
-        button:hover { background-color: #426fc4; }
-        .match-list { max-width: 600px; margin: 0 auto; }
-        .match { padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 18px; font-weight: bold;}
-        .win { background-color: #28344e; border-left: 6px solid #5383e8; }
-        .loss { background-color: #59343b; border-left: 6px solid #e84057; }
-        .champion { width: 100px; text-align: left; }
-        .kda { color: #9e9eb1; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -28,53 +16,13 @@
         <button onclick="searchPlayer()">Rechercher</button>
     </div>
 
-    <div id="loading" style="display: none;">Recherche en cours... ⏳</div>
+    <div id="loading" style="display: none; color: #888; margin-bottom: 20px;">Recherche des données de la faille... ⏳</div>
     
+    <div id="profile-section" style="display: none;"></div>
+
     <div id="results" class="match-list">
         </div>
 
-    <script>
-        async function searchPlayer() {
-            const gameName = document.getElementById('gameName').value;
-            const tagLine = document.getElementById('tagLine').value;
-            const resultsDiv = document.getElementById('results');
-            const loadingDiv = document.getElementById('loading');
-
-            if(!gameName || !tagLine) return alert("Remplis les deux champs !");
-
-            // Afficher le chargement et vider les anciens résultats
-            resultsDiv.innerHTML = '';
-            loadingDiv.style.display = 'block';
-
-            try {
-                // On appelle ton serveur Node.js !
-                const response = await fetch(`http://localhost:3000/api/player/${gameName}/${tagLine}`);
-                const data = await response.json();
-
-                if(data.error) throw new Error(data.error);
-
-                // Cacher le chargement
-                loadingDiv.style.display = 'none';
-
-                // Générer l'affichage pour chaque match
-                data.recentMatches.forEach(match => {
-                    const matchDiv = document.createElement('div');
-                    matchDiv.className = `match ${match.win ? 'win' : 'loss'}`; // Change la couleur selon win/loss
-                    
-                    matchDiv.innerHTML = `
-                        <div class="champion">${match.champion}</div>
-                        <div class="kda">${match.kills} / ${match.deaths} / ${match.assists}</div>
-                        <div>${match.win ? 'Victoire' : 'Défaite'}</div>
-                    `;
-                    resultsDiv.appendChild(matchDiv);
-                });
-
-            } catch (error) {
-                loadingDiv.style.display = 'none';
-                resultsDiv.innerHTML = `<p style="color: red;">Erreur: ${error.message}</p>`;
-            }
-        }
-    </script>
-
+    <script src="script.js"></script>
 </body>
 </html>

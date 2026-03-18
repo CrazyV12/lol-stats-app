@@ -1,0 +1,76 @@
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #121212; color: white; text-align: center; padding: 30px; margin: 0;}
+.search-box { margin-bottom: 30px; }
+input { padding: 12px; font-size: 16px; border-radius: 5px; border: 1px solid #333; margin: 5px; background-color: #1e1e1e; color: white;}
+button { padding: 12px 24px; font-size: 16px; cursor: pointer; background-color: #5383e8; color: white; border: none; border-radius: 5px; font-weight: bold; transition: 0.2s;}
+button:hover { background-color: #426fc4; }
+
+.match-list { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px;}
+.match-container { border-radius: 8px; overflow: hidden; background-color: #1a1a24;}
+
+.match-summary { padding: 10px 20px; display: grid; grid-template-columns: 80px 1.5fr 1fr 1fr 1fr auto; align-items: center; font-size: 15px; cursor: pointer; transition: 0.2s;}
+.match-summary:hover { filter: brightness(1.1); }
+.win-bg { background-color: #28344e; border-left: 6px solid #5383e8; }
+.loss-bg { background-color: #59343b; border-left: 6px solid #e84057; }
+
+.champion-container { display: flex; align-items: center; justify-content: flex-start; }
+.champion-icon { width: 50px; height: 50px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); object-fit: cover; }
+
+.kda { font-weight: bold; color: #e6e6e6; }
+.stats { color: #9e9eb1; font-size: 13px; display: flex; flex-direction: column; gap: 3px; text-align: left;}
+.duration { font-size: 12px; color: #888; text-align: right; margin-right: 15px;}
+.result-text { font-weight: bold; text-align: right; }
+.win-bg .result-text { color: #5383e8; }
+.loss-bg .result-text { color: #e84057; }
+
+.items-row { display: flex; gap: 3px; }
+.item-icon { width: 25px; height: 25px; border-radius: 4px; object-fit: cover; }
+.item-empty { width: 25px; height: 25px; border-radius: 4px; background-color: rgba(0,0,0,0.3); }
+
+.match-details { display: none; padding: 20px; background-color: #121217; border-top: 1px solid #2a2a35; text-align: left;}
+.teams-wrapper { display: flex; gap: 20px; justify-content: space-between;}
+.team { flex: 1; }
+.team-title { font-size: 12px; font-weight: bold; color: #888; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px;}
+.team-blue .team-title { color: #5383e8; }
+.team-red .team-title { color: #e84057; }
+.player-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; font-size: 12px;}
+.player-champ-icon { width: 20px; height: 20px; border-radius: 50%; }
+.player-name { flex: 1; color: #ccc; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90px;}
+.player-kda { width: 60px; text-align: center; color: #888;}
+.player-items { display: flex; gap: 1px; }
+.player-items img, .player-items div { width: 15px; height: 15px; border-radius: 2px; }
+
+/* En-tête du profil avec Top Champions */
+#profile-section {
+    background-color: #1a1a24; border-radius: 12px; padding: 25px; margin: 0 auto 30px auto;
+    max-width: 800px; display: flex; gap: 25px; align-items: center; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.profile-icon-container { position: relative; width: 100px; height: 100px; flex-shrink: 0;}
+.profile-icon { width: 100%; height: 100%; border-radius: 20px; object-fit: cover; border: 3px solid #333;}
+.profile-level { 
+    position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); 
+    background-color: #222; padding: 2px 12px; border-radius: 10px; 
+    font-size: 13px; font-weight: bold; border: 1px solid #555; 
+}
+
+.profile-info { flex: 1; display: flex; flex-direction: column;}
+.profile-name { font-size: 28px; font-weight: bold; margin: 0 0 10px 0; }
+.profile-tag { color: #888; font-size: 18px; }
+
+.profile-stats-row { display: flex; gap: 20px; align-items: flex-start;}
+
+.ranked-box { 
+    background-color: #121217; padding: 12px 20px; border-radius: 8px; 
+    border-left: 4px solid #5383e8; display: inline-block; min-width: 150px;
+}
+.rank-title { color: #888; font-size: 12px; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px;}
+.rank-details { font-size: 20px; font-weight: bold; color: #fff; }
+.rank-lp { color: #5383e8; font-size: 16px;}
+.rank-stats { font-size: 13px; color: #aaa; margin-top: 4px; }
+
+/* NOUVEAU : Top Champions */
+.top-champions-box { background-color: #121217; padding: 12px 20px; border-radius: 8px; flex: 1; }
+.top-champs-list { display: flex; gap: 15px; margin-top: 8px; }
+.top-champ { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.top-champ img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #333;}
+.top-champ span { font-size: 12px; color: #aaa; font-weight: bold;}
