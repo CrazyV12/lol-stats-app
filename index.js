@@ -71,6 +71,11 @@ app.get('/api/player/:gameName/:tagLine', async (req, res) => {
                 deaths: p.deaths,
                 assists: p.assists,
                 teamId: p.teamId,
+                damage: p.totalDamageDealtToChampions,
+                gold: p.goldEarned,
+                spell1: p.summoner1Id,
+                spell2: p.summoner2Id,
+                mainRune: p.perks?.styles[0]?.selections[0]?.perk,
                 items: [p.item0, p.item1, p.item2, p.item3, p.item4, p.item5, p.item6]
             }));
 
@@ -81,11 +86,23 @@ app.get('/api/player/:gameName/:tagLine', async (req, res) => {
                 deaths: mainPlayer.deaths,
                 assists: mainPlayer.assists,
                 win: mainPlayer.win,
+                multiKill: mainPlayer.largestMultiKill,
+                firstBlood: mainPlayer.firstBloodKill,
                 cs: mainPlayer.totalMinionsKilled + mainPlayer.neutralMinionsKilled,
                 damage: mainPlayer.totalDamageDealtToChampions,
                 duration: matchData.info.gameDuration,
+                spell1: mainPlayer.summoner1Id,
+                spell2: mainPlayer.summoner2Id,
+                mainRune: mainPlayer.perks?.styles[0]?.selections[0]?.perk,
+                subRuneStyle: mainPlayer.perks?.styles[1]?.style,
                 items: [mainPlayer.item0, mainPlayer.item1, mainPlayer.item2, mainPlayer.item3, mainPlayer.item4, mainPlayer.item5, mainPlayer.item6],
-                participants: allPlayers
+                participants: allPlayers,
+                teams: matchData.info.teams.map(t => ({
+                    teamId: t.teamId,
+                    dragons: t.objectives.dragon.kills,
+                    barons: t.objectives.baron.kills,
+                    towers: t.objectives.tower.kills
+                }))
             });
         }
 

@@ -4,10 +4,10 @@ input { padding: 12px; font-size: 16px; border-radius: 5px; border: 1px solid #3
 button { padding: 12px 24px; font-size: 16px; cursor: pointer; background-color: #5383e8; color: white; border: none; border-radius: 5px; font-weight: bold; transition: 0.2s;}
 button:hover { background-color: #426fc4; }
 
-.match-list { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px;}
+.match-list { max-width: 950px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px;}
 .match-container { border-radius: 8px; overflow: hidden; background-color: #1a1a24;}
 
-.match-summary { padding: 10px 20px; display: grid; grid-template-columns: 80px 1.5fr 1fr 1fr 1fr auto; align-items: center; font-size: 15px; cursor: pointer; transition: 0.2s;}
+.match-summary { padding: 10px 20px; display: grid; grid-template-columns: 80px 70px 1.5fr 1fr 1fr 1fr auto; align-items: center; font-size: 15px; cursor: pointer; transition: 0.2s;}
 .match-summary:hover { filter: brightness(1.1); }
 .win-bg { background-color: #28344e; border-left: 6px solid #5383e8; }
 .loss-bg { background-color: #59343b; border-left: 6px solid #e84057; }
@@ -15,7 +15,14 @@ button:hover { background-color: #426fc4; }
 .champion-container { display: flex; align-items: center; justify-content: flex-start; }
 .champion-icon { width: 50px; height: 50px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); object-fit: cover; }
 
+.kda-box { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .kda { font-weight: bold; color: #e6e6e6; }
+.badges-container { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center;}
+.badge { font-size: 9px; padding: 2px 6px; border-radius: 10px; font-weight: bold; background-color: #333; color: #fff; text-transform: uppercase;}
+.first-blood { background-color: #a32222; }
+.multikill { background-color: #d13e3e; }
+.quadra, .penta { background-color: #fca311; color: #000; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 .stats { color: #9e9eb1; font-size: 13px; display: flex; flex-direction: column; gap: 3px; text-align: left;}
 .duration { font-size: 12px; color: #888; text-align: right; margin-right: 15px;}
 .result-text { font-weight: bold; text-align: right; }
@@ -29,7 +36,9 @@ button:hover { background-color: #426fc4; }
 .match-details { display: none; padding: 20px; background-color: #121217; border-top: 1px solid #2a2a35; text-align: left;}
 .teams-wrapper { display: flex; gap: 20px; justify-content: space-between;}
 .team { flex: 1; }
-.team-title { font-size: 12px; font-weight: bold; color: #888; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px;}
+.team-title { font-size: 12px; font-weight: bold; color: #888; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px; display: flex; flex-direction: column; gap: 4px;}
+.objectives { font-size: 11px; color: #aaa; }
+.chart-container { margin-top: 20px; background-color: #1a1a24; border-radius: 8px; padding: 15px; height: 220px; width: 100%; box-sizing: border-box; }
 .team-blue .team-title { color: #5383e8; }
 .team-red .team-title { color: #e84057; }
 .player-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; font-size: 12px;}
@@ -42,7 +51,7 @@ button:hover { background-color: #426fc4; }
 /* En-tête du profil avec Top Champions */
 #profile-section {
     background-color: #1a1a24; border-radius: 12px; padding: 25px; margin: 0 auto 30px auto;
-    max-width: 800px; display: flex; gap: 25px; align-items: center; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    max-width: 950px; display: flex; gap: 25px; align-items: center; text-align: left; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
 .profile-icon-container { position: relative; width: 100px; height: 100px; flex-shrink: 0;}
@@ -74,3 +83,9 @@ button:hover { background-color: #426fc4; }
 .top-champ { display: flex; flex-direction: column; align-items: center; gap: 5px; }
 .top-champ img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #333;}
 .top-champ span { font-size: 12px; color: #aaa; font-weight: bold;}
+
+.spells-runes-container { display: flex; gap: 4px; }
+.spells, .runes { display: flex; flex-direction: column; gap: 2px; }
+.spell-icon, .rune-icon { width: 22px; height: 22px; border-radius: 4px; }
+.main-rune { background-color: #000; border-radius: 50%; }
+.sub-rune { width: 16px; height: 16px; margin: 0 auto; }

@@ -13,11 +13,11 @@ Ce fichier centralise toutes les idées et tâches pour transformer le prototype
 
 ## 📊 Phase 2 : Le Profil du Joueur (En-tête du site)
 
-- [ ] **Ranked Stats :** Récupérer et afficher le rang actuel du joueur (ex: Gold II, 54 LP) en Solo/Duo et Flex.
-- [ ] **Emblèmes :** Afficher l'image officielle de la ligue (Casque de fer, Bouclier d'or, etc.).
-- [ ] **Winrate Global :** Calculer le ratio de victoires sur les matchs récents ou la saison.
-- [ ] **Top Champions :** Afficher les 3 champions les plus joués par le joueur avec leur KDA moyen.
-- [ ] **Icône d'invocateur et Niveau :** Afficher l'icône de profil du joueur et son niveau de compte en haut de la page.
+- [x] **Ranked Stats :** Récupérer et afficher le rang actuel du joueur (ex: Gold II, 54 LP) en Solo/Duo et Flex.
+- [x] **Emblèmes :** Afficher l'image officielle de la ligue (Casque de fer, Bouclier d'or, etc.).
+- [x] **Winrate Global :** Calculer le ratio de victoires sur les matchs récents ou la saison.
+- [x] **Top Champions :** Afficher les 3 champions les plus joués par le joueur avec leur KDA moyen.
+- [x] **Icône d'invocateur et Niveau :** Afficher l'icône de profil du joueur et son niveau de compte en haut de la page.
 
 ## ⚔️ Phase 3 : Détails Avancés des Matchs
 
@@ -25,7 +25,7 @@ Ce fichier centralise toutes les idées et tâches pour transformer le prototype
 - [ ] **Runes :** Récupérer la rune principale (ex: Conquérant, Électrocution) et l'afficher.
 - [ ] **Badges de Performance :** Ajouter des tags visuels comme "MVP", "ACE", ou "Triple Kill".
 - [ ] **Analyse de l'équipe :** Afficher le total des golds et les objectifs (Dragons, Hérauts, Barons) pour chaque équipe dans le menu déroulant.
-- [ ] **Graphiques (Optionnel mais Pro) :** Utiliser une librairie comme Chart.js pour afficher la courbe d'or ou le camembert des dégâts de la partie.
+- [ ] **Graphiques :** Utiliser une librairie comme Chart.js pour afficher la courbe d'or et le graphique en barres des dégâts de la partie.
 
 ## 🎨 Phase 4 : Expérience Utilisateur (UI/UX)
 
