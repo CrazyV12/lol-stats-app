@@ -3,27 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon Mini OP.GG</title>
+    <title>DPM Stats — League of Legends Tracker</title>
+    <meta name="description" content="Analyse tes performances League of Legends. Historique des matchs, stats par champion, filtres par rôle et queue.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <h1>Mon Mini OP.GG 🚀</h1>
-    
-    <div class="search-box">
-        <input type="text" id="gameName" placeholder="Pseudo (ex: Roms)" value="Roms">
-        <input type="text" id="tagLine" placeholder="Tag (ex: Crazy)" value="Crazy">
-        <button onclick="searchPlayer()">Rechercher</button>
-    </div>
-
-    <div id="loading" style="display: none; color: #888; margin-bottom: 20px;">Recherche des données de la faille... ⏳</div>
-    
-    <div id="profile-section" style="display: none;"></div>
-
-    <div id="results" class="match-list">
+    <!-- ÉCRAN D'ACCUEIL -->
+    <section id="home-screen">
+        <div class="home-content">
+            <div class="home-logo">⚔️</div>
+            <h1 class="home-title">DPM <span class="home-title-accent">Stats</span></h1>
+            <p class="home-subtitle">Analyse tes performances sur la Faille de l'invocateur</p>
+            <div class="home-search">
+                <div class="home-search-row">
+                    <input type="text" id="searchInput" placeholder="Pseudo#Tag (ex: Roms#Crazy)" value="Roms#Crazy">
+                    <button id="searchBtn" onclick="searchPlayer()">
+                        <span class="btn-icon">🔍</span> Rechercher
+                    </button>
+                </div>
+            </div>
+            <div class="home-hint">Riot ID — Fonctionne pour EUW, EUNE, NA, KR...</div>
         </div>
+    </section>
+
+    <!-- ÉCRAN RÉSULTATS -->
+    <section id="results-screen" style="display: none;">
+        <!-- HEADER STICKY -->
+        <header id="sticky-header">
+            <div class="header-inner">
+                <div class="header-brand" onclick="goHome()">⚔️ DPM Stats</div>
+                <div class="header-search">
+                    <input type="text" id="searchInput2" placeholder="Pseudo#Tag">
+                    <button onclick="searchFromHeader()">🔍</button>
+                </div>
+            </div>
+        </header>
+
+        <div id="notification-container"></div>
+
+        <!-- LAYOUT PRINCIPAL : SIDEBAR + MAIN -->
+        <div class="app-layout">
+            <!-- SIDEBAR GAUCHE -->
+            <aside id="sidebar">
+                <div id="profile-section"></div>
+                <div id="champion-stats"></div>
+                <div id="role-stats"></div>
+                <div id="played-with"></div>
+            </aside>
+
+            <!-- CONTENU PRINCIPAL -->
+            <main id="main-content">
+                <!-- FILTRES -->
+                <div class="filters-bar">
+                    <div class="queue-filters">
+                        <button class="queue-btn active" data-queue="all" onclick="switchQueueFilter(this)">Tous</button>
+                        <button class="queue-btn" data-queue="solo" onclick="switchQueueFilter(this)">Solo/Duo</button>
+                        <button class="queue-btn" data-queue="flex" onclick="switchQueueFilter(this)">Flex</button>
+                        <button class="queue-btn" data-queue="aram" onclick="switchQueueFilter(this)">ARAM</button>
+                        <button class="queue-btn" data-queue="normal" onclick="switchQueueFilter(this)">Normal</button>
+                        <button class="queue-btn" data-queue="other" onclick="switchQueueFilter(this)">Autre</button>
+                    </div>
+                    <div class="role-filters">
+                        <button class="role-btn active" data-role="ALL" onclick="switchRoleFilter(this)" title="Tous">
+                            <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4" fill="currentColor"/><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+                        </button>
+                        <button class="role-btn" data-role="TOP" onclick="switchRoleFilter(this)" title="Top">
+                            <svg width="20" height="20" viewBox="0 0 20 20"><path d="M3 3h6v2H5v12h12v-4h2v6H3z" fill="currentColor"/><path d="M11 3h6v6h-2V5h-4z" fill="currentColor" opacity="0.5"/></svg>
+                        </button>
+                        <button class="role-btn" data-role="JUNGLE" onclick="switchRoleFilter(this)" title="Jungle">
+                            <svg width="20" height="20" viewBox="0 0 20 20"><path d="M10 2C6 6 3 10 3 14c0 2.5 3 4 7 4s7-1.5 7-4c0-4-3-8-7-12z" fill="currentColor"/></svg>
+                        </button>
+                        <button class="role-btn" data-role="MIDDLE" onclick="switchRoleFilter(this)" title="Mid">
+                            <svg width="20" height="20" viewBox="0 0 20 20"><path d="M3 17L17 3" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="5" cy="15" r="2" fill="currentColor" opacity="0.5"/><circle cx="15" cy="5" r="2" fill="currentColor" opacity="0.5"/></svg>
+                        </button>
+                        <button class="role-btn" data-role="BOTTOM" onclick="switchRoleFilter(this)" title="ADC">
+                            <svg width="20" height="20" viewBox="0 0 20 20"><path d="M3 3h6v2H5v12h12v-4h2v6H3z" fill="currentColor" opacity="0.5"/><path d="M11 3h6v6h-2V5h-4z" fill="currentColor"/></svg>
+                        </button>
+                        <button class="role-btn" data-role="UTILITY" onclick="switchRoleFilter(this)" title="Support">
+                            <svg width="20" height="20" viewBox="0 0 20 20"><path d="M10 2l2 6h6l-5 4 2 6-5-4-5 4 2-6-5-4h6z" fill="currentColor"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="results" class="match-list"></div>
+            </main>
+        </div>
+    </section>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
+    <div id="opgg-tooltip" class="opgg-tooltip"></div>
 </body>
 </html>
