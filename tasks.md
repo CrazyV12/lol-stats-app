@@ -45,3 +45,4 @@ Ce fichier centralise toutes les idées et tâches pour transformer le prototype
 ## 🔴 Phase 6 : Fonctionnalités Bonus
 
 - [ ] **Recherche Récente :** Mémoriser localement les 3 derniers pseudos cherchés pour pouvoir cliquer dessus rapidement.
+- [ ] **Joueurs cliquables :** A chaque endroit où un joueur est affiché, que ce soit dans les parties, les amis, ect... il doit être cliquable et mener à son profil.

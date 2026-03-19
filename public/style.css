@@ -21,7 +21,38 @@ body { font-family: 'Inter', 'Segoe UI', Tahoma, sans-serif; background-color: #
 .home-search button { padding: 14px 28px; font-size: 16px; cursor: pointer; background: linear-gradient(135deg, #5383e8, #4070d0); color: #fff; border: none; border-radius: 10px; font-weight: 700; transition: 0.3s; white-space: nowrap; }
 .home-search button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(83,131,232,0.3); }
 .btn-icon { margin-right: 4px; }
-.home-hint { margin-top: 20px; color: #444; font-size: 13px; }
+.home-hint { margin-top: 14px; color: #444; font-size: 13px; }
+
+/* ===== PHASE 6 — RECHERCHES RÉCENTES ===== */
+#recent-searches { margin-top: 18px; min-height: 36px; }
+.recent-searches-inner { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.recent-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: 20px;
+    background-color: #16161f; border: 1px solid #2a2a3a;
+    color: #aaa; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: 0.2s;
+    white-space: nowrap;
+}
+.recent-chip:hover {
+    border-color: #5383e8;
+    color: #fff;
+    background-color: rgba(83, 131, 232, 0.1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(83, 131, 232, 0.15);
+}
+.recent-chip-icon { font-size: 12px; opacity: 0.6; }
+.recent-chip-tag { color: #555; font-weight: 400; margin-left: 1px; }
+.recent-chip:hover .recent-chip-tag { color: #8aabf0; }
+
+/* ===== PHASE 6 — JOUEURS CLIQUABLES ===== */
+.player-link {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.15s;
+}
+.player-link:hover { color: #5383e8; }
 
 /* ===== STICKY HEADER ===== */
 #sticky-header {

@@ -21,12 +21,95 @@ const ROLE_ICONS = { TOP: '🛡️', JUNGLE: '🌿', MIDDLE: '⚔️', BOTTOM: '
 function goHome() {
     document.getElementById('home-screen').style.display = 'flex';
     document.getElementById('results-screen').style.display = 'none';
+    renderRecentSearches();
 }
 
 function searchFromHeader() {
     const val = document.getElementById('searchInput2').value.trim();
     if (val.includes('#')) {
         document.getElementById('searchInput').value = val;
+        searchPlayer();
+    }
+}
+
+// =========================================================
+// PHASE 6 — RECHERCHES RÉCENTES
+// =========================================================
+
+const RECENT_KEY = 'dpm_recent_searches';
+const MAX_RECENT = 3;
+
+function saveRecentSearch(gameName, tagLine) {
+    let recents = getRecentSearches();
+    // Supprimer si déjà présent (pour remettre en tête)
+    recents = recents.filter(r => !(r.name.toLowerCase() === gameName.toLowerCase() && r.tag.toLowerCase() === tagLine.toLowerCase()));
+    recents.unshift({ name: gameName, tag: tagLine });
+    if (recents.length > MAX_RECENT) recents = recents.slice(0, MAX_RECENT);
+    localStorage.setItem(RECENT_KEY, JSON.stringify(recents));
+}
+
+function getRecentSearches() {
+    try {
+        return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]');
+    } catch {
+        return [];
+    }
+}
+
+function renderRecentSearches() {
+    const container = document.getElementById('recent-searches');
+    if (!container) return;
+    const recents = getRecentSearches();
+    if (recents.length === 0) { container.innerHTML = ''; return; }
+
+    const chips = recents.map(r =>
+        `<button class="recent-chip" onclick="searchFromRecent('${r.name}','${r.tag}')">
+            <span class="recent-chip-icon">🕐</span>
+            <span>${r.name}<span class="recent-chip-tag">#${r.tag}</span></span>
+        </button>`
+    ).join('');
+    container.innerHTML = `<div class="recent-searches-inner">${chips}</div>`;
+}
+
+function searchFromRecent(name, tag) {
+    document.getElementById('searchInput').value = `${name}#${tag}`;
+    searchPlayer();
+}
+
+// =========================================================
+// PHASE 6 — JOUEURS CLIQUABLES
+// =========================================================
+
+function navigateToPlayer(name, tag) {
+    if (!name || name === 'Inconnu') return;
+    const riotId = tag ? `${name}#${tag}` : name;
+    document.getElementById('searchInput').value = riotId;
+    document.getElementById('searchInput2').value = riotId;
+    // Si on est sur l'écran résultats, on lance directement
+    if (document.getElementById('results-screen').style.display !== 'none') {
+        const [gn, ...rest] = riotId.split('#');
+        const tl = rest.join('#').trim();
+        if (gn && tl) {
+            currentGameName = gn;
+            currentTagLine = tl;
+            currentStart = 0;
+            currentQueueFilter = 'all';
+            currentRoleFilter = 'ALL';
+            allLoadedMatches = [];
+            removeLoadMoreButton();
+            document.querySelectorAll('.queue-btn').forEach(b => b.classList.toggle('active', b.dataset.queue === 'all'));
+            document.querySelectorAll('.role-btn').forEach(b => b.classList.toggle('active', b.dataset.role === 'ALL'));
+            showSkeletons();
+            getLatestPatch().then(pv => {
+                patchVersion = pv;
+                currentPatch = pv;
+                Promise.all([getChampionMap(pv), getSpellsMap(pv), getRunesMap(pv)]).then(([cm, sm, rd]) => {
+                    champMap = cm; spellsMap = sm; allRunesData = rd;
+                    loadMatches(true);
+                });
+            });
+        }
+    } else {
         searchPlayer();
     }
 }
@@ -412,24 +495,23 @@ function renderPlayedWith(matches) {
     const div = document.getElementById('played-with');
     if (!matches.length) { div.innerHTML = ''; return; }
 
-    // Trouver les coéquipiers fréquents
     const teammates = {};
     matches.forEach(m => {
         if (!m.participants) return;
-        // Trouver l'équipe du joueur principal
         const mainTeamId = m.participants.find(p => p.champion === m.champion)?.teamId;
         if (!mainTeamId) return;
 
         m.participants.forEach(p => {
-            if (p.champion === m.champion && p.teamId === mainTeamId) return; // skip self
-            if (p.teamId !== mainTeamId) return; // skip enemies
+            if (p.champion === m.champion && p.teamId === mainTeamId) return;
+            if (p.teamId !== mainTeamId) return;
             const key = p.name;
             if (key === 'Inconnu') return;
-            if (!teammates[key]) teammates[key] = { wins: 0, games: 0, champion: p.champion };
+            if (!teammates[key]) teammates[key] = { wins: 0, games: 0, champion: p.champion, tag: p.tag || '' };
             teammates[key].games++;
             if (m.win) teammates[key].wins++;
-            // Garder le champion le plus joué
             teammates[key].lastChamp = p.champion;
+            // Mettre à jour le tag s'il est disponible
+            if (p.tag) teammates[key].tag = p.tag;
         });
     });
 
@@ -444,11 +526,15 @@ function renderPlayedWith(matches) {
         const wr = Math.round((s.wins / s.games) * 100);
         const wrClass = wr >= 55 ? 'wr-good' : wr <= 45 ? 'wr-bad' : 'wr-neutral';
         const cn = getCleanChampionName(s.lastChamp);
-        const wl = `${s.wins}W - ${s.games - s.wins}L`;
+        // PHASE 6 : lien cliquable si on a le tag
+        const nameTag = s.tag ? `'${name}','${s.tag}'` : null;
+        const nameHTML = nameTag
+            ? `<span class="player-link" onclick="navigateToPlayer(${nameTag})">${name}</span>`
+            : `<span>${name}</span>`;
         return `<div class="played-with-row">
             <img src="https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${cn}.png" class="played-with-icon">
             <div class="played-with-info">
-                <div class="played-with-name">${name}</div>
+                <div class="played-with-name">${nameHTML}</div>
             </div>
             <span class="played-with-games">${s.games}</span>
             <span class="champ-perf-wr ${wrClass}">${wr}%</span>
@@ -509,6 +595,7 @@ function renderMatch(match) {
     const getKills = t => t.reduce((s, p) => s + (p.kills || 0), 0);
     const maxDmg = Math.max(...match.participants.map(p => p.damage));
 
+    // PHASE 6 : noms de joueurs cliquables dans les détails de match
     const teamHTML = team => team.map(p => {
         const kr = p.deaths === 0 ? "∞" : ((p.kills + p.assists) / p.deaths).toFixed(1);
         const dp = (p.damage / maxDmg) * 100;
@@ -516,7 +603,11 @@ function renderMatch(match) {
         const ps2 = spellsMap[p.spell2] || 'SummonerFlash';
         const pmr = findRuneIcon(p.mainRune);
         const bc = p.teamId === 100 ? '#5383e8' : '#e84057';
-        return `<div class="opgg-row"><img src="https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${getCleanChampionName(p.champion)}.png" class="opgg-champ"><div class="opgg-spells"><img src="https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/spell/${ps1}.png"><img src="https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/spell/${ps2}.png"></div><div class="opgg-runes"><img src="https://ddragon.leagueoflegends.com/cdn/img/${pmr}" class="main-rune"></div><div class="opgg-name">${p.name}</div><div class="opgg-kda"><div>${p.kills}/${p.deaths}/${p.assists}</div><div class="kda-ratio">${kr}</div></div><div class="opgg-dmg"><div class="dmg-text">${p.damage}</div><div class="dmg-bar-bg"><div class="dmg-bar-fill" style="width:${dp}%;background:${bc}"></div></div></div><div class="opgg-cs">${p.cs}</div><div class="opgg-items">${generateItemsHTML(p.items, patchVersion, true)}</div></div>`;
+        // Lien cliquable si on a le tag
+        const nameHTML = p.tag
+            ? `<span class="player-link" onclick="navigateToPlayer('${p.name.replace(/'/g, "\\'")}','${p.tag.replace(/'/g, "\\'")}')">${p.name}</span>`
+            : `<span>${p.name}</span>`;
+        return `<div class="opgg-row"><img src="https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/${getCleanChampionName(p.champion)}.png" class="opgg-champ"><div class="opgg-spells"><img src="https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/spell/${ps1}.png"><img src="https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/spell/${ps2}.png"></div><div class="opgg-runes"><img src="https://ddragon.leagueoflegends.com/cdn/img/${pmr}" class="main-rune"></div><div class="opgg-name">${nameHTML}</div><div class="opgg-kda"><div>${p.kills}/${p.deaths}/${p.assists}</div><div class="kda-ratio">${kr}</div></div><div class="opgg-dmg"><div class="dmg-text">${p.damage}</div><div class="dmg-bar-bg"><div class="dmg-bar-fill" style="width:${dp}%;background:${bc}"></div></div></div><div class="opgg-cs">${p.cs}</div><div class="opgg-items">${generateItemsHTML(p.items, patchVersion, true)}</div></div>`;
     }).join('');
 
     // Runes
@@ -573,7 +664,6 @@ function renderMatchList(matches) {
     const resultsDiv = document.getElementById('results');
     resultsDiv.innerHTML = '';
 
-    // Filtrer par rôle si nécessaire
     const filtered = currentRoleFilter === 'ALL' ? matches : matches.filter(m => m.role === currentRoleFilter);
 
     if (filtered.length === 0) {
@@ -581,7 +671,6 @@ function renderMatchList(matches) {
         return;
     }
 
-    // Grouper par date
     let lastDate = '';
     filtered.forEach(match => {
         const dateLabel = match.gameCreation ? getDateLabel(match.gameCreation) : '';
@@ -688,12 +777,10 @@ async function searchPlayer() {
     const tagLine = rest.join('#').trim();
     if (!gameName || !tagLine) { showNotification('Format: Pseudo#Tag', 'warning'); return; }
 
-    // Basculer vers l'écran résultats
     document.getElementById('home-screen').style.display = 'none';
     document.getElementById('results-screen').style.display = 'block';
     document.getElementById('searchInput2').value = raw;
 
-    // Reset
     currentGameName = gameName;
     currentTagLine = tagLine;
     currentStart = 0;
@@ -715,14 +802,20 @@ async function searchPlayer() {
 
         await loadMatches(true);
 
+        // PHASE 6 : sauvegarder et rafraîchir les chips après succès
+        saveRecentSearch(gameName, tagLine);
+        renderRecentSearches();
+
     } catch (error) {
         showNotification(error.message, 'error');
         document.getElementById('results').innerHTML = `<p style="color:#e84057;font-weight:700;text-align:center;padding:40px">Erreur: ${error.message}</p>`;
     }
 }
 
-// --- ENTER KEY ---
+// --- ENTER KEY + INIT ---
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('searchInput').addEventListener('keypress', e => { if (e.key === 'Enter') searchPlayer(); });
     document.getElementById('searchInput2').addEventListener('keypress', e => { if (e.key === 'Enter') searchFromHeader(); });
+    // PHASE 6 : afficher les recherches récentes dès le chargement
+    renderRecentSearches();
 });

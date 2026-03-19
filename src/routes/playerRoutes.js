@@ -166,6 +166,7 @@ function formatMatchData(matchId, matchData, mainPlayer, puuid) {
     
     const allPlayers = matchData.info.participants.map(p => ({
         name: p.summonerName || p.riotIdGameName || "Inconnu",
+        tag: p.riotIdTagline || "",   // ← PHASE 6 : tag Riot pour les liens cliquables
         champion: p.championName,
         kills: p.kills,
         deaths: p.deaths,
@@ -212,7 +213,6 @@ function formatMatchData(matchId, matchData, mainPlayer, puuid) {
             barons: t.objectives?.baron?.kills || 0,
             towers: t.objectives?.tower?.kills || 0
         })),
-        // NOUVEAUX CHAMPS
         role: mainPlayer.teamPosition || mainPlayer.individualPosition || 'UNKNOWN',
         queueId: queueId,
         queueName: QUEUE_NAMES[queueId] || 'Autre',
